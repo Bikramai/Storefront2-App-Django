@@ -10,7 +10,7 @@ from .serializers import ProductSerializer
 # Create your views here. It's function that takes the resquest and return the response
 @api_view()
 def product_list(request):
-    queryset = Product.objects.all()
+    queryset = Product.objects.select_related('collection').all()
     serializer = ProductSerializer(queryset, many=True)
     return Response(serializer.data)
 
