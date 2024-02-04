@@ -2,9 +2,9 @@ from decimal import Decimal
 from rest_framework import serializers
 from store.models import Product, Collection
 
-# class CollectionSerializer(serializers.Serializer):
-#     id = serializers.IntegerField()
-#     title = serializers.
+class CollectionSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    title = serializers.CharField(max_length=255)
 
 
 class ProductSerializer(serializers.Serializer):
@@ -12,7 +12,7 @@ class ProductSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255)
     price = serializers.DecimalField(max_digits=6, decimal_places=2, source='unit_price')
     price_with_tax = serializers.SerializerMethodField(method_name='calculate_tax')
-    collection = serializers.StringRelatedField()
+    collection = CollectionSerializer()
         
     
 
