@@ -1,10 +1,12 @@
+import collections
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Product
-from .serializers import ProductSerializer
+from django.db.models.aggregates import Count
+from .models import Product, Collection
+from .serializers import CollectionSerializer, ProductSerializer
 
 
 # Create your views here. It's function that takes the resquest and return the response
@@ -21,8 +23,6 @@ def product_list(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         
-
-
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def product_detail(request, id):
@@ -41,7 +41,30 @@ def product_detail(request, id):
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
         
-
-@api_view()
-def collection_detail(request, id):
-    return Response('ok')
+@api_view(['GET', 'POST'])
+def collection_list(request):
+    if request.method == 'GET':
+        queryset = collections.objects.annotate(products_count=Count('products')).all
+        serializer = CollectionSerializer(queryset, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = CollectionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+@api_view(['GET', 'PUT', 'DELETE'])
+def collection_detail(request, pk):
+    collection = get_object_or_404(
+        Collection.objects.annotate(
+            products_count=Count('products')), pk=pk)
+    if request.method == 'GET':
+        serializer = CollectionSerializer(collection, data=request)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+    elif request.method == 'DELETE':
+        if collection.products.count() > 0:
+            return Response( {'error': 'Product cannot be deleted becauseit is associated with an order item.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        collection.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
