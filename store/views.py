@@ -10,8 +10,8 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
 from django.db.models.aggregates import Count
-from .models import Product, OrderItem, Collection
-from .serializers import CollectionSerializer, ProductSerializer
+from .models import Product, OrderItem, Collection, Review
+from .serializers import CollectionSerializer, ProductSerializer, ReviewSerializer
 
 
 class ProductViewSet(ModelViewSet):
@@ -39,4 +39,8 @@ class CollectionViewSet(ModelViewSet):
             return Response({'error': 'Product cannot be deleted becauseit is associated with an order item.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         collection.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class ReviewViewSet(ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
 
