@@ -3,6 +3,8 @@ from django.db import models
 from uuid import uuid4
 
 
+
+
 class Promotion(models.Model):
     description = models.CharField(max_length=255)
     discount = models.FloatField()
