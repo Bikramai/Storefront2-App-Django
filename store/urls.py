@@ -9,6 +9,7 @@ router = routers.DefaultRouter()
 router.register('products', views.ProductViewSet, basename='products')
 router.register('collections', views.CollectionViewSet)
 # pprint(router.urls) if you want to print in terminal 
+router.register('carts', views.CartViewSet)
 
 
 products_router = routers.NestedDefaultRouter(router, 'products', lookup='product')
