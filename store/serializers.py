@@ -65,10 +65,10 @@ class CartSerializer(serializers.ModelSerializer):
         fields = ['id', 'items', 'total_price']
 
 
-class AddCartItemSerializer(serializers.ModelSerializer):
+class AddCartItemSerializer(serializers.ModelSerializer): # Add a Cart Items
     product_id = serializers.IntegerField()
 
-    def validate_product_id(self, value):
+    def validate_product_id(self, value): #data validation in serializers with entire objects
         if not Product.objects.filter(pk=value).exists():
             raise serializers.ValidationError('No product with the given ID was found.')
         return value
@@ -79,12 +79,12 @@ class AddCartItemSerializer(serializers.ModelSerializer):
         quantity = self.validated_data['quantity']
 
         try: 
-            cart_item = CartItem.objects.get(cart_id=cart_id, product_id=product_id)
+            cart_item = CartItem.objects.get(cart_id=cart_id, product_id=product_id) # We are Update an existing Item
             cart_item.quantity += quantity
             cart_item.save()
             self.instance = cart_item
-        except CartItem.DoesNotExist:
-            self.instance = CartItem.objects.create(cart_id=cart_id, **self.validated_data)
+        except CartItem.DoesNotExist:  
+            self.instance = CartItem.objects.create(cart_id=cart_id, **self.validated_data) # Creating a new item
         
         return self.instance
 
