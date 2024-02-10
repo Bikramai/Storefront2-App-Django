@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -160,4 +161,9 @@ DJOSER = {
     'SERIALIZERS':{
         'user_create': 'core.serializers.UserCreateSerializer'
     }
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    #eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA3NjU0ODUzLCJpYXQiOjE3MDc1Njg0NTMsImp0aSI6ImUwNThkM2U0M2JlZDQ4MDA5ZGI3NTYxNTcxOWNhODFlIiwidXNlcl9pZCI6M30.VMrTqS3YJsvKVew9XU_CYZndq7831L7egAOCRLMg4mU
 }
