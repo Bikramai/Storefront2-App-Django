@@ -12,3 +12,7 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 class FullDjangoModePermissions(permissions.DjangoModelPermissions):
     def __init__(self) -> None:
         self.perms_map['GET'] = ['%(app_label)s.view_%(model_name)s']
+
+class ViewCustomerHistoryPermission(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user.has_perm('store.view_history')

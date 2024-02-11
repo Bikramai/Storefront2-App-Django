@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
 
-from store.permissions import FullDjangoModePermissions, IsAdminOrReadOnly
+from store.permissions import FullDjangoModePermissions, IsAdminOrReadOnly, ViewCustomerHistoryPermission
 from .filters import ProductFilter
 from .models import Cart, CartItem, Collection, Customer, Product, Review
 from .serializers import AddCartItemSerializer, CartItemSerializer, CartSerializer, CollectionSerializer, CustomerSerializer, ProductSerializer, ReviewSerializer, UpdateCartItemSerializer
@@ -94,10 +94,15 @@ class CustomerViewSet(ModelViewSet):
     permission_classes = [FullDjangoModePermissions]
 
 
-    def get_permissions(self): # Return list of permission objects
-        if self.request.method == 'GET':
-            return [AllowAny()]
-        return [IsAuthenticated()]
+    @action(detail=True, permission_classes=[ViewCustomerHistoryPermission])
+    def history(self, request, pk):
+        return Response('ok')
+
+
+    # def get_permissions(self): # Return list of permission objects
+    #     if self.request.method == 'GET':
+    #         return [AllowAny()]
+    #     return [IsAuthenticated()]
 
     
     @action(detail=False, methods=['GET', 'PUT'], permission_classes=[IsAuthenticated])
